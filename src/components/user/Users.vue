@@ -242,13 +242,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less" scoped>
-  .el-table {
-    margin-top: 20px;
-  }
-
-  .el-pagination {
-    margin-top: 15px;
-  }
-</style>
