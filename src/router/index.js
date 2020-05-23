@@ -10,15 +10,31 @@ const routes = [
   },
   {
     path: '/login',
+    name: 'login',
     component: () => import('../components/Login')
   },
   {
     path: '/home',
-    component: () => import('../components/Home')
-  },
-  {
-    path: '*',
-    component: () => import('../components/404')
+    name: 'home',
+    redirect: '/welcome',
+    component: () => import('../components/Home'),
+    children: [
+      {
+        path: '/welcome',
+        name: 'welcome',
+        component: () => import('../components/Welcome')
+      },
+      {
+        path: '/users',
+        name: 'users',
+        component: () => import('../components/user/Users')
+      },
+      {
+        path: '/roles',
+        name: 'roles',
+        component: () => import('../components/roles/Roles')
+      }
+    ]
   }
 ]
 
