@@ -46,7 +46,8 @@
                          @click="deleteUserDialog(scope.row.id)"></el-button>
             </el-tooltip>
             <el-tooltip content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini"
+                         @click="showRoleDialog(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -103,6 +104,28 @@
         <el-button type="primary" @click="changeUserInfo">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 编辑用户弹窗 -->
+    <el-dialog title="分配角色" :visible.sync="assignRoleVisible" :close-on-click-modal="false"
+               @close="assignRoleVisible = false">
+      <div>
+        <p>当前的用户：{{userInfo.username}}</p>
+        <p>当前的角色：{{userInfo.role_name}}</p>
+        <p>分配新角色：
+          <el-select v-model="selectRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesOptions"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="assignRoleVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateRole">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -142,7 +165,18 @@ export default {
       },
       // 编辑的用户信息
       editUserForm: {},
-      editUserFormVisible: false
+      editUserFormVisible: false,
+      // 分配角色
+      assignRoleVisible: false,
+      // 角色用户信息
+      userInfo: {
+        role_name: '',
+        username: '',
+        id: 0
+      },
+      // 角色列表
+      rolesOptions: [],
+      selectRoleId: ''
     }
   },
   created () {
@@ -183,11 +217,9 @@ export default {
     },
     // 添加用户
     addUser () {
-      console.log(this.$refs)
       this.$refs.addUserForm.validate(async (valid) => {
         if (!valid) return
         const { data: res } = await this.$axios.post('users', this.addUserForm)
-        console.log(res)
         if (res.meta.status !== 201) return this.$message.error(res.meta.msg)
         this.$refs.addUserForm.resetFields()
         this.addUserFormVisible = false
@@ -200,13 +232,13 @@ export default {
       this.editUserFormVisible = true
       this.editUserForm = res.data
     },
+    // 修改用户信息
     async changeUserInfo () {
       const { data: res } = await this.$axios.put(`users/${this.editUserForm.id}`, {
         id: this.editUserForm.id,
         email: this.editUserForm.email,
         mobile: this.editUserForm.mobile
       })
-      console.log(res)
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.$message.success('用户信息修改成功')
       this.$refs.editUserForm.resetFields()
@@ -238,6 +270,30 @@ export default {
       const { data: res } = await this.$axios.delete(`users/${id}`)
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       await this.getUserList()
+    },
+    // 显示分配权限的弹窗
+    async showRoleDialog (rowData) {
+      this.selectRoleId = ''
+      this.userInfo.role_name = rowData.role_name
+      this.userInfo.username = rowData.username
+      this.userInfo.id = rowData.id
+      await this.getRolesList()
+      this.assignRoleVisible = true
+    },
+    // 获取角色列表
+    async getRolesList () {
+      const { data: res } = await this.$axios.get('roles')
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.rolesOptions = res.data
+    },
+    async updateRole () {
+      const { data: res } = await this.$axios.put(`users/${this.userInfo.id}/role`, {
+        rid: this.selectRoleId
+      })
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.$message.success(res.meta.msg)
+      await this.getUserList()
+      this.assignRoleVisible = false
     }
   }
 }
