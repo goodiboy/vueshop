@@ -213,7 +213,9 @@ export default {
       if (id) {
         this.getRoles(id)
       } else {
-        this.$refs.rolesForm.resetFields()
+        if (this.$refs.rolesForm) {
+          this.$refs.rolesForm.resetFields()
+        }
       }
       this.rolesFormVisible = true
     },

@@ -28,6 +28,12 @@ export default [
         path: '/rights',
         name: 'rights',
         component: () => import('../components/power/Rights')
+      },
+      // 商品管理
+      {
+        path: '/categories',
+        name: 'categories',
+        component: () => import('../components/goods/Cate')
       }
     ]
   }
