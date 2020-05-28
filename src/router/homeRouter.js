@@ -34,6 +34,11 @@ export default [
         path: '/categories',
         name: 'categories',
         component: () => import('../components/goods/Cate')
+      },
+      {
+        path: '/params',
+        name: 'params',
+        component: () => import('../components/goods/Params')
       }
     ]
   }

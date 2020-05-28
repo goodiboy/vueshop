@@ -2,7 +2,7 @@ import Vue from 'vue'
 import {
   Message, Button, Form, Input, FormItem, Container, Aside, Main, Header, Menu, Submenu, MenuItem, MenuItemGroup,
   Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn, Switch, Tooltip, Pagination, Dialog, MessageBox,
-  Tag, Tree, Select, Option, Cascader
+  Tag, Tree, Select, Option, Cascader, Alert, Tabs, TabPane
 } from 'element-ui'
 
 Vue.prototype.$message = Message
@@ -36,3 +36,6 @@ Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Cascader)
+Vue.use(Alert)
+Vue.use(Tabs)
+Vue.use(TabPane)
